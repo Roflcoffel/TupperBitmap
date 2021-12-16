@@ -17,10 +17,22 @@
 	const int MAX_X = 107;
 
 	List<List<bool>> bitmap = new List<List<bool>>();
+	List<List<bool>> m_bitmap = new List<List<bool>>();
 
 	protected override void OnInitialized()
 	{
 		bitmap = GenerateBitmap(TUPPER_FORMULA);
+
+		//Fill m_bitmap with false values
+		for (int y = 0; y < 17; y++)
+		{
+			var t_row = new List<bool>();
+			for (int x = 0; x <= MAX_X; x++)
+			{
+				t_row.Add(false);
+			}
+			m_bitmap.Add(t_row);
+		}
 	}
 
 	List<List<bool>> GenerateBitmap(string k)
@@ -72,13 +84,32 @@
 			@for (int x = 0; x <= MAX_X; x++)
 			{
 				string active = bitmap[y][x] ? "active" : "";
-				<div class="pixel @active" ></div>
+				<div class="pixel @active"></div>
 			}
 		</div>
 	}
 </div>
 
+<br />
+<br />
+<br />
+<br />
 <!-- Create another grid that is interactive -->
+<div>
+	@for (int y = 0; y < 17; y++)
+	{
+		int local_y = y;
+		<div class="row">
+			@for (int x = 0; x <= MAX_X; x++)
+			{
+				int local_x = x;
+
+				string active = m_bitmap[local_y][local_x] ? "active" : "";
+				<div class="pixel @active" @onclick="@( e => m_bitmap[local_y][local_x] = !m_bitmap[local_y][local_x])"></div>
+			}
+		</div>
+	}
+</div>
 
 <!-- Add button to calcualte the k value for the bitmap image -->
 

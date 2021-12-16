@@ -1,9 +1,87 @@
 ﻿@page "/"
 
+@using System.Numerics
+
+@code {
+
+	// Value for k to draw the tupper formula itself.
+	const string TUPPER_FORMULA = "960939379918958884971672962127852754715004339660"+
+	"129306651505519271702802395266424689642842174350718121267153782770623355993237"+
+	"280874144307891325963941337723487857735749823926629715517173716995165232890538"+
+	"221612403238855866184013235585136048828693337902491454229288667081096184496091"+
+	"705183454067827731551705405381627380967602565625016981482083418783163849115590"+
+	"225610003652351370343874461848378737238198224849863465033159410054974700593138"+
+	"339226497249461751545728366702369745461014655997933798537483143786841806593422"+
+	"227898388722980000748404719";
+
+	const int MAX_X = 107;
+
+	List<List<bool>> bitmap = new List<List<bool>>();
+
+	protected override void OnInitialized()
+	{
+		bitmap = GenerateBitmap(TUPPER_FORMULA);
+	}
+
+	List<List<bool>> GenerateBitmap(string k)
+	{
+		var t_bitmap = new List<List<bool>>();
+		BigInteger t_k = BigInteger.Parse(k);
+
+		for (int y = 0; y < 17; y++)
+		{
+			var t_row = new List<bool>();
+			for (int x = MAX_X; x >= 0; x--)
+			{
+				t_row.Add(IsInTupper(x, t_k+y));
+			}
+			t_bitmap.Add(t_row);
+		}
+
+		return t_bitmap;
+	}
+
+	bool IsInTupper(int x, BigInteger y)
+	{
+		int exponent = (17 * x) + (int)(y % 17);
+		BigInteger value = BigInteger.Divide(y,17);
+
+		if(exponent > 0)
+		{
+			value = value >> exponent-1;
+			value = value % 4;
+			return value > 1;
+		}
+		else
+		{
+			value = value % 2;
+			return value > 0;
+		}
+	}
+
+	//On Init fill a bitmap list with values if Tupper Formula is true, When y = TUPPER_FORMULA
+}
+
 <PageTitle>Index</PageTitle>
 
-<h1>Hello, world!</h1>
+<!-- Draw a (107,17) Grid -->
+<div>
+	@for (int y = 0; y < 17; y++)
+	{
+		<div class="row">
+			@for (int x = 0; x <= MAX_X; x++)
+			{
+				string active = bitmap[y][x] ? "active" : "";
+				<div class="pixel @active" ></div>
+			}
+		</div>
+	}
+</div>
 
-Welcome to your new app.
+<!-- Create another grid that is interactive -->
 
-<SurveyPrompt Title="How is Blazor working for you?" />
+<!-- Add button to calcualte the k value for the bitmap image -->
+
+<!-- Display the value -->
+
+<!-- Add a textbox to change the initial bitmap image -->
